@@ -55,8 +55,26 @@ class GameServiceTest {
 
     @Test
     void testStartGame_Success() {
-        // TODO: Implementar el test para testStartGame_Success
-        
+        //* TODO: Implementar el test para testStartGame_Success
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+
+        List<Word> palabras = Arrays.asList(word);
+
+        when(wordRepository.findAllOrdered()).thenReturn(palabras);
+        when(gameInProgressRepository.findByJugadorAndPalabra(player.getId(), word.getId())).thenReturn(Optional.empty());
+        when(wordRepository.save(any(Word.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(gameInProgressRepository.save(any(GameInProgress.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        GameResponseDTO result = gameService.startGame(player.getId());
+
+        assertNotNull(result);
+        assertEquals(7, result.getIntentosRestantes());
+        assertFalse(result.getPalabraOculta().isEmpty());
+        assertEquals(0, result.getPuntajeAcumulado());
+        verify(playerRepository, times(1)).findById(player.getId());
+        verify(wordRepository, times(1)).findAllOrdered();
+        verify(wordRepository, times(1)).save(any(Word.class));
+        verify(gameInProgressRepository, times(1)).save(any(GameInProgress.class));
     }
 
     @Test

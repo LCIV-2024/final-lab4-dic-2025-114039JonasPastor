@@ -62,8 +62,6 @@ class GameServiceTest {
 
         when(wordRepository.findAllOrdered()).thenReturn(palabras);
         when(gameInProgressRepository.findByJugadorAndPalabra(player.getId(), word.getId())).thenReturn(Optional.empty());
-        when(wordRepository.save(any(Word.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(gameInProgressRepository.save(any(GameInProgress.class))).thenAnswer(inv -> inv.getArgument(0));
 
         GameResponseDTO result = gameService.startGame(player.getId());
 
